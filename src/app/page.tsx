@@ -243,41 +243,43 @@ export default function Home() {
       // Fetch company
       const companyRes = await fetch('/api/company')
       const companyData = await companyRes.json()
-      if (companyData) setCompany(companyData)
+      if (companyData && !companyData.error) setCompany(companyData)
       
       // Fetch roles
       const rolesRes = await fetch('/api/roles')
       const rolesData = await rolesRes.json()
-      setRoles(rolesData)
+      if (Array.isArray(rolesData)) setRoles(rolesData)
       
       // Fetch employees
       const empRes = await fetch('/api/employees')
       const empData = await empRes.json()
-      setEmployees(empData)
+      if (Array.isArray(empData)) setEmployees(empData)
       
       // Fetch attendance
       const attRes = await fetch('/api/attendance')
       const attData = await attRes.json()
-      setAttendanceLog(attData)
+      if (Array.isArray(attData)) setAttendanceLog(attData)
       
       // Fetch payroll
       const payRes = await fetch('/api/payroll')
       const payData = await payRes.json()
-      const adjMap: Record<string, PayrollAdjustment> = {}
-      payData.forEach((adj: PayrollAdjustment) => {
-        adjMap[`${adj.employeeId}-${adj.month}-${adj.year}`] = adj
-      })
-      setPayrollAdjustments(adjMap)
+      if (Array.isArray(payData)) {
+        const adjMap: Record<string, PayrollAdjustment> = {}
+        payData.forEach((adj: PayrollAdjustment) => {
+          adjMap[`${adj.employeeId}-${adj.month}-${adj.year}`] = adj
+        })
+        setPayrollAdjustments(adjMap)
+      }
       
       // Fetch admins
       const adminRes = await fetch('/api/admin')
       const adminData = await adminRes.json()
-      setAdmins(adminData)
+      if (Array.isArray(adminData)) setAdmins(adminData)
       
       // Fetch home page settings
       const homeRes = await fetch('/api/homepage')
       const homeData = await homeRes.json()
-      if (homeData) setHomePageSettings(homeData)
+      if (homeData && !homeData.error) setHomePageSettings(homeData)
     } catch (error) {
       console.error('Error fetching data:', error)
     }

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Company {
@@ -52,9 +52,6 @@ model AttendanceLog {
   note       String?
   createdAt  DateTime @default(now())
   employee   Employee @relation(fields: [employeeId], references: [employeeId])
-  
-  @@index([employeeId])
-  @@index([timestamp])
 }
 
 model PayrollAdjustment {
@@ -69,7 +66,6 @@ model PayrollAdjustment {
   employee   Employee @relation(fields: [employeeId], references: [employeeId])
 
   @@unique([employeeId, month, year])
-  @@index([employeeId])
 }
 
 model Admin {
