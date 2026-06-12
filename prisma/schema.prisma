@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String   @default("LBB Annahl")
+  empPrefix String   @default("TENTOR")
+  address   String   @default("")
+  phone     String   @default("")
+  email     String   @default("")
+  website   String   @default("")
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id               String     @id @default(cuid())
+  name             String     @unique
+  salary           Int        @default(0)
+  defaultBonus     Int        @default(0)
+  defaultAllowance Int        @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  employees        Employee[]
+}
+
+model Employee {
+  id            String              @id @default(cuid())
+  employeeId    String              @unique
+  name          String
+  role          String
+  salaryPerDay  Int                 @default(0)
+  pin           String              @default("123456")
+  isActive      Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  attendanceLog AttendanceLog[]
+  roleRel       Role                @relation(fields: [role], references: [name])
+  payrollAdj    PayrollAdjustment[]
+}
+
+model AttendanceLog {
+  id         String   @id @default(cuid())
+  employeeId String
+  type       String
+  timestamp  DateTime @default(now())
+  note       String?
+  createdAt  DateTime @default(now())
+  employee   Employee @relation(fields: [employeeId], references: [employeeId])
+}
+
+model PayrollAdjustment {
+  id         String   @id @default(cuid())
+  employeeId String
+  month      Int
+  year       Int
+  bonus      Int      @default(0)
+  allowance  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  employee   Employee @relation(fields: [employeeId], references: [employeeId])
+
+  @@unique([employeeId, month, year])
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model HomePageSettings {
+  id              String   @id @default(cuid())
+  heroTitle       String   @default("Selamat Datang di")
+  heroSubtitle    String   @default("Portal LBB")
+  heroDescription String   @default("Kelola absensi, aktivitas mengajar, dan penggajian dengan mudah dalam satu platform terintegrasi.")
+  heroImage       String   @default("/hero-image.png")
+  statusText      String   @default("Sistem Aktif")
+  adminCardTitle  String   @default("Admin Dashboard")
+  adminCardDesc   String   @default("Kelola data pengajar, absensi, dan penggajian")
+  tutorCardTitle  String   @default("Portal Pengajar / Staf")
+  tutorCardDesc   String   @default("Akses absensi, riwayat mengajar, dan slip gaji")
+  showStats       Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
