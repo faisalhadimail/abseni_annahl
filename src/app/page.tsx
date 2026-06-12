@@ -568,7 +568,6 @@ export default function Home() {
                         onChange={e => setEmployeeLoginId(e.target.value.toUpperCase())}
                         className="w-full text-center text-xl font-mono uppercase py-3 px-4 bg-white/10 border border-white/30 rounded-xl focus:border-indigo-400 focus:bg-white/20 outline-none transition-all text-white placeholder-white/50" 
                         placeholder="ID PENGAJAR..."
-                        autoFocus
                         required
                       />
                     </div>
